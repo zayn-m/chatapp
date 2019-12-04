@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+
+import Chat from './components/Chat/Chat';
+
+const App = () => {
+	const [ token, setToken ] = React.useState(false);
+
+	React.useEffect(() => {
+		if (localStorage.getItem('__key')) {
+			setToken(true);
+		}
+	}, []);
+
+	return (
+		<Router>
+			<Switch>
+				<Route exact path="/" render={() => <Chat token={token} setToken={setToken} />} />
+				<Redirect to="/" />
+			</Switch>
+		</Router>
+	);
+};
 
 export default App;
