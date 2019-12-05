@@ -4,19 +4,21 @@ import Message from './Message/Message';
 
 import './Messages.css';
 
-export default ({ messages, name, lastEl, loadMore }) => (
-	<ScrollToBottom className="messages">
-		{lastEl && (
-			<div className="d-flex justify-content-center p-4">
-				<button className="btn btn-light border" onClick={loadMore}>
-					Load more
-				</button>
-			</div>
-		)}
-		{messages.map((msg, index) => (
-			<div key={index} id="messagesContainer">
-				<Message message={msg} name={name} />
-			</div>
-		))}
-	</ScrollToBottom>
-);
+export default ({ messages, name, lastEl, loadMore, loading }) => {
+	return (
+		<ScrollToBottom className="messages">
+			{lastEl && (
+				<div className="d-flex justify-content-center p-4" id="loadButton">
+					<button className="btn btn-light border" disabled={loading} onClick={loadMore}>
+						Load more
+					</button>
+				</div>
+			)}
+			{messages.map((msg, index) => (
+				<div key={index} id="messagesContainer">
+					<Message message={msg} name={name} />
+				</div>
+			))}
+		</ScrollToBottom>
+	);
+};

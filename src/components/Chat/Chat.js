@@ -15,6 +15,7 @@ const Chat = ({ token, setToken }) => {
 	const [ message, setMessage ] = React.useState('');
 	const [ messages, setMessages ] = React.useState([]);
 	const [ lastEl, setLastEl ] = React.useState({});
+	const [ loading, setLoading ] = React.useState(false);
 
 	React.useEffect(() => {
 		if (localStorage.getItem('username')) {
@@ -25,9 +26,7 @@ const Chat = ({ token, setToken }) => {
 
 		fetchData();
 
-		INTERVAL_ID = setInterval(() => {
-			fetchData();
-		}, 3000);
+		startInterval();
 
 		return () => {
 			window.removeEventListener('scroll', listenToScroll);
@@ -41,6 +40,7 @@ const Chat = ({ token, setToken }) => {
 			.then((msgs) => {
 				let updatedMsgs = [];
 				if (action === 'more') {
+					console.log(msgs);
 					updatedMsgs = msgs.concat(messages);
 					if (msgs.length === 1) setLastEl(null);
 					else setLastEl(msgs[msgs.length - 1]);
@@ -50,17 +50,39 @@ const Chat = ({ token, setToken }) => {
 				}
 
 				setMessages(updatedMsgs);
+				setLoading(false);
+			})
+			.catch((error) => {
+				console.log(error);
+				setLoading(false);
 			});
 	};
 
+	const startInterval = (action) => {
+		INTERVAL_ID = setInterval(() => {
+			if (action === 'more') {
+				fetch(`${API_ENDPOINT}/chats?createdAtFrom=${messages[0].createdAt || ''}`)
+					.then((res) => res.json())
+					.then((msgs) => {
+						let updatedMsgs = [];
+						updatedMsgs = messages.concat(msgs);
+
+						setMessages(updatedMsgs);
+					});
+			} else {
+				fetchData();
+			}
+		}, 3000);
+	};
+
 	const listenToScroll = (e) => {
-		const div = document.getElementById('messagesContainer');
-		// console.log(window.scrollY);
-		// const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+		const element = document.querySelector('#loadButton');
+		const position = element.getBoundingClientRect();
 
-		// const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-
-		// const scrolled = winScroll / height;
+		// checking whether fully visible
+		if (position.top >= 0 && position.bottom <= window.innerHeight) {
+			// loadMessages();
+		}
 	};
 
 	const onLogin = (e) => {
@@ -87,6 +109,8 @@ const Chat = ({ token, setToken }) => {
 	const sendMessage = (e) => {
 		e.preventDefault();
 
+		// clearInterval(INTERVAL_ID);
+
 		if (message) {
 			fetch(`${API_ENDPOINT}/chats`, {
 				method: 'POST',
@@ -106,7 +130,9 @@ const Chat = ({ token, setToken }) => {
 					};
 					setMessages([ ...messages, obj ]);
 				})
-				.catch((err) => console.error(err));
+				.catch((err) => {
+					console.log(err);
+				});
 
 			setMessage('');
 		}
@@ -119,8 +145,12 @@ const Chat = ({ token, setToken }) => {
 	};
 
 	const loadMessages = () => {
+		setLoading(true);
 		fetchData('more');
 		clearInterval(INTERVAL_ID);
+		// setTimeout(() => {
+		// 	startInterval('more');
+		// }, 3000);
 	};
 
 	return (
@@ -133,7 +163,7 @@ const Chat = ({ token, setToken }) => {
 					handleLogin={onLogin}
 					handleLogout={logout}
 				/>
-				<Messages messages={messages} name={name} lastEl={lastEl} loadMore={loadMessages} />
+				<Messages messages={messages} name={name} lastEl={lastEl} loadMore={loadMessages} loading={loading} />
 				{token && <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />}
 			</div>
 		</div>

@@ -37,7 +37,7 @@ const Message = ({ message: { _id, message, userName, createdAt }, name }) => {
 			>
 				<p className="messageText colorDark">{ReactEmoji.emojify(message)}</p>
 			</div>
-			<p className="sentText pl-10 ">{userName}</p>
+			<p className="sentText pl-10 ">{userName.substring(0, 50)}</p>
 		</div>
 	);
 };
