@@ -13,8 +13,8 @@ export default ({ messages, name, lastEl, loadMore }) => (
 				</button>
 			</div>
 		)}
-		{messages.map((msg) => (
-			<div key={msg._id} id="messagesContainer">
+		{messages.map((msg, index) => (
+			<div key={index} id="messagesContainer">
 				<Message message={msg} name={name} />
 			</div>
 		))}

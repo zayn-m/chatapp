@@ -35,13 +35,20 @@ const Chat = ({ token, setToken }) => {
 		};
 	}, []);
 
-	const fetchData = () => {
-		fetch(`${API_ENDPOINT}/chats?createdAtFrom=${lastEl.createdAt || ''}`)
+	const fetchData = (action) => {
+		fetch(`${API_ENDPOINT}/chats?order=desc&createdAtTo=${lastEl.createdAt || ''}`)
 			.then((res) => res.json())
 			.then((msgs) => {
-				const updatedMsgs = messages.concat(msgs);
+				let updatedMsgs = [];
+				if (action === 'more') {
+					updatedMsgs = msgs.concat(messages);
+					if (msgs.length === 1) setLastEl(null);
+					else setLastEl(msgs[msgs.length - 1]);
+				} else {
+					updatedMsgs = messages.concat(msgs).reverse();
+					setLastEl(updatedMsgs[0]);
+				}
 
-				setLastEl(msgs[msgs.length - 1]);
 				setMessages(updatedMsgs);
 			});
 	};
@@ -112,7 +119,7 @@ const Chat = ({ token, setToken }) => {
 	};
 
 	const loadMessages = () => {
-		fetchData();
+		fetchData('more');
 		clearInterval(INTERVAL_ID);
 	};
 
