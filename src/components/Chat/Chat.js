@@ -40,7 +40,6 @@ const Chat = ({ token, setToken }) => {
 			.then((msgs) => {
 				let updatedMsgs = [];
 				if (action === 'more') {
-					console.log(msgs);
 					updatedMsgs = msgs.concat(messages);
 					if (msgs.length === 1) setLastEl(null);
 					else setLastEl(msgs[msgs.length - 1]);

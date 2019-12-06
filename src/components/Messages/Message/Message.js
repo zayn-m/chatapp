@@ -24,7 +24,9 @@ const Message = ({ message: { _id, message, userName, createdAt }, name }) => {
 				data-placement="top"
 				title={dayjs(createdAt).format('YYYY-MM-DD')}
 			>
-				<p className="messageText colorWhite">{ReactEmoji.emojify(message)}</p>
+				<p className="messageText colorWhite" style={{ whiteSpace: 'pre-wrap' }}>
+					{ReactEmoji.emojify(message)}
+				</p>
 			</div>
 		</div>
 	) : (
@@ -35,7 +37,9 @@ const Message = ({ message: { _id, message, userName, createdAt }, name }) => {
 				data-placement="top"
 				title={dayjs(createdAt).format('YYYY-MM-DD')}
 			>
-				<p className="messageText colorDark">{ReactEmoji.emojify(message)}</p>
+				<p className="messageText colorDark" style={{ whiteSpace: 'pre-wrap' }}>
+					{ReactEmoji.emojify(message)}
+				</p>
 			</div>
 			<p className="sentText pl-10 ">{userName.substring(0, 50)}</p>
 		</div>
