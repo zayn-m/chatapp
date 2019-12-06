@@ -22,14 +22,14 @@ const Chat = ({ token, setToken }) => {
 			setName(localStorage.getItem('username'));
 		}
 
-		window.addEventListener('scroll', listenToScroll, true);
+		// window.addEventListener('scroll', listenToScroll, true);
 
 		fetchData();
 
 		startInterval();
 
 		return () => {
-			window.removeEventListener('scroll', listenToScroll);
+			// window.removeEventListener('scroll', listenToScroll);
 			clearInterval(INTERVAL_ID);
 		};
 	}, []);
